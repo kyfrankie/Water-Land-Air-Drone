@@ -10,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * COPYRIGHT(c) 2018 STMicroelectronics
+  * COPYRIGHT(c) 2019 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -44,7 +44,13 @@
 /* Includes ------------------------------------------------------------------*/
 
 /* USER CODE BEGIN Includes */
-#include "UL_setup.h"
+#include "tft.h"
+#include "pwm.h"
+#include "rc.h"
+#include "imu.h"
+#include "gps.h"
+#include "camera.h"
+#include "brushless.h"
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
@@ -59,12 +65,24 @@
 #define RMII_REF_CLK_GPIO_Port GPIOA
 #define RMII_MDIO_Pin GPIO_PIN_2
 #define RMII_MDIO_GPIO_Port GPIOA
+#define Motor1_Pin GPIO_PIN_3
+#define Motor1_GPIO_Port GPIOA
+#define Motor2_Pin GPIO_PIN_5
+#define Motor2_GPIO_Port GPIOA
 #define RMII_CRS_DV_Pin GPIO_PIN_7
 #define RMII_CRS_DV_GPIO_Port GPIOA
 #define RMII_RXD0_Pin GPIO_PIN_4
 #define RMII_RXD0_GPIO_Port GPIOC
 #define RMII_RXD1_Pin GPIO_PIN_5
 #define RMII_RXD1_GPIO_Port GPIOC
+#define Brushless1_Pin GPIO_PIN_9
+#define Brushless1_GPIO_Port GPIOE
+#define Brushless2_Pin GPIO_PIN_11
+#define Brushless2_GPIO_Port GPIOE
+#define Brushless3_Pin GPIO_PIN_13
+#define Brushless3_GPIO_Port GPIOE
+#define Brushless4_Pin GPIO_PIN_14
+#define Brushless4_GPIO_Port GPIOE
 #define RMII_TXD1_Pin GPIO_PIN_13
 #define RMII_TXD1_GPIO_Port GPIOB
 #define LD3_Pin GPIO_PIN_14
@@ -73,6 +91,10 @@
 #define STLK_RX_GPIO_Port GPIOD
 #define STLK_TX_Pin GPIO_PIN_9
 #define STLK_TX_GPIO_Port GPIOD
+#define Ultrasonic1_Pin GPIO_PIN_12
+#define Ultrasonic1_GPIO_Port GPIOD
+#define Ultrasonic1D13_Pin GPIO_PIN_13
+#define Ultrasonic1D13_GPIO_Port GPIOD
 #define USB_PowerSwitchOn_Pin GPIO_PIN_6
 #define USB_PowerSwitchOn_GPIO_Port GPIOG
 #define USB_OverCurrent_Pin GPIO_PIN_7
@@ -97,6 +119,10 @@
 #define RMII_TXD0_GPIO_Port GPIOG
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
+#define Servo1_Pin GPIO_PIN_4
+#define Servo1_GPIO_Port GPIOB
+#define Servo2_Pin GPIO_PIN_5
+#define Servo2_GPIO_Port GPIOB
 #define LD2_Pin GPIO_PIN_7
 #define LD2_GPIO_Port GPIOB
 
