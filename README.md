@@ -1,14 +1,14 @@
 # Water-Land-Air-Drone
 
-@TODO \n
+@TODO  
 Camera Library
 Laser Library
 SD Card Library
 Flight Control
 
-ON GOING \n
+ON GOING  
 IMU Library
 
-FINISHED \n
+FINISHED  
 TFT Library
 PWM Library
