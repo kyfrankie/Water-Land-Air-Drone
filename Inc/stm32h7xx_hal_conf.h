@@ -42,8 +42,6 @@
  extern "C" {
 #endif
 
-#include "main.h"
-
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
@@ -62,7 +60,7 @@
 /* #define HAL_DAC_MODULE_ENABLED   */
 #define HAL_DCMI_MODULE_ENABLED
 /* #define HAL_DMA2D_MODULE_ENABLED   */
-#define HAL_ETH_MODULE_ENABLED
+/* #define HAL_ETH_MODULE_ENABLED   */
 /* #define HAL_NAND_MODULE_ENABLED   */
 /* #define HAL_NOR_MODULE_ENABLED   */
 /* #define HAL_SRAM_MODULE_ENABLED   */
@@ -171,7 +169,7 @@
 #define  VDD_VALUE                    ((uint32_t)3300U) /*!< Value of VDD in mv */
 #define  TICK_INT_PRIORITY            ((uint32_t)0U) /*!< tick interrupt priority */
 #define  USE_RTOS                     0U
-
+#define  USE_SD_TRANSCEIVER           1U               /*!< use uSD Transceiver */
 /* ########################## Assert Selection ############################## */
 /**
   * @brief Uncomment the line below to expanse the "assert_param" macro in the 
@@ -190,8 +188,8 @@
 
 /* ################## ETH peripheral configuration ########################## */
 
-#define ETH_TX_DESC_CNT ((uint32_t)4)       /* Tx Descriptor Length  */
-#define ETH_RX_DESC_CNT ((uint32_t)4)       /* Rx Descriptor Length  */
+#define ETH_TX_DESC_CNT ((uint32_t)4U)       /* Tx Descriptor Length  */
+#define ETH_RX_DESC_CNT ((uint32_t)4U)       /* Rx Descriptor Length  */
 
 /* Includes ------------------------------------------------------------------*/
 /**

@@ -140,8 +140,9 @@ static void ST7735_SetAddressWindow(UL_TFT_typedef* TFT, uint8_t x0, uint8_t y0,
     ST7735_WriteCommand(TFT, ST7735_RAMWR);
 }
 
-void UL_ST7735_Init(UL_TFT_typedef* TFT,  GPIO_TypeDef* GPIO_RST_Port, uint16_t GPIO_RST_Pin, GPIO_TypeDef* GPIO_DC_Port, uint16_t GPIO_DC_Pin,
-                    GPIO_TypeDef* GPIO_CS_Port, uint16_t GPIO_CS_Pin, SPI_HandleTypeDef* hspi) {
+void UL_TFT_ST7735_Init(UL_TFT_typedef *TFT, GPIO_TypeDef *GPIO_RST_Port, uint16_t GPIO_RST_Pin,
+                        GPIO_TypeDef *GPIO_DC_Port, uint16_t GPIO_DC_Pin,
+                        GPIO_TypeDef *GPIO_CS_Port, uint16_t GPIO_CS_Pin, SPI_HandleTypeDef *hspi) {
     TFT->hspi = hspi;
     TFT->GPIO_DC_Pin = GPIO_DC_Pin;
     TFT->GPIO_DC_Port = GPIO_DC_Port;
@@ -157,7 +158,7 @@ void UL_ST7735_Init(UL_TFT_typedef* TFT,  GPIO_TypeDef* GPIO_RST_Port, uint16_t 
     ST7735_Unselect(TFT);
 }
 
-void UL_ST7735_DrawPixel(UL_TFT_typedef* TFT, uint16_t x, uint16_t y, uint16_t color) {
+void UL_TFT_ST7735_DrawPixel(UL_TFT_typedef *TFT, uint16_t x, uint16_t y, uint16_t color) {
     if((x >= ST7735_WIDTH) || (y >= ST7735_HEIGHT))
         return;
 
@@ -204,7 +205,8 @@ static void ST7735_WriteChar(uint16_t x, uint16_t y, char ch, FontDef font, uint
 }
 */
 
-void UL_ST7735_WriteString(UL_TFT_typedef* TFT, uint16_t x, uint16_t y, const char* str, FontDef font, uint16_t color, uint16_t bgcolor) {
+void UL_TFT_ST7735_WriteString(UL_TFT_typedef *TFT, uint16_t x, uint16_t y, const char *str, FontDef font,
+                               uint16_t color, uint16_t bgcolor) {
     ST7735_Select(TFT);
 
     while(*str) {
@@ -230,7 +232,14 @@ void UL_ST7735_WriteString(UL_TFT_typedef* TFT, uint16_t x, uint16_t y, const ch
     ST7735_Unselect(TFT);
 }
 
-void UL_ST7735_FillRectangle(UL_TFT_typedef* TFT, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color) {
+void UL_TFT_ST7735_WriteNumber(UL_TFT_typedef *TFT, uint16_t x, uint16_t y, const uint32_t num, FontDef font,
+                               uint16_t color, uint16_t bgcolor){
+    char a;
+    sprintf(&a,"%lu", num);
+    UL_TFT_ST7735_WriteString(TFT, x, y, &a, font, color, bgcolor);
+}
+
+void UL_TFT_ST7735_FillRectangle(UL_TFT_typedef *TFT, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color) {
     // clipping
     if((x >= ST7735_WIDTH) || (y >= ST7735_HEIGHT)) return;
     if((x + w - 1) >= ST7735_WIDTH) w = ST7735_WIDTH - x;
@@ -250,8 +259,8 @@ void UL_ST7735_FillRectangle(UL_TFT_typedef* TFT, uint16_t x, uint16_t y, uint16
     ST7735_Unselect(TFT);
 }
 
-void UL_ST7735_FillScreen(UL_TFT_typedef* TFT, uint16_t color) {
-    UL_ST7735_FillRectangle(TFT, 0, 0, ST7735_WIDTH, ST7735_HEIGHT, color);
+void UL_TFT_ST7735_FillScreen(UL_TFT_typedef *TFT, uint16_t color) {
+    UL_TFT_ST7735_FillRectangle(TFT, 0, 0, ST7735_WIDTH, ST7735_HEIGHT, color);
 }
 
 void ST7735_DrawImage(UL_TFT_typedef* TFT, uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint16_t* data) {
@@ -265,7 +274,7 @@ void ST7735_DrawImage(UL_TFT_typedef* TFT, uint16_t x, uint16_t y, uint16_t w, u
     ST7735_Unselect(TFT);
 }
 
-void UL_ST7735_InvertColors(UL_TFT_typedef* TFT, bool invert) {
+void UL_TFT_ST7735_InvertColors(UL_TFT_typedef *TFT, bool invert) {
     ST7735_Select(TFT);
     ST7735_WriteCommand(TFT, invert ? ST7735_INVON : ST7735_INVOFF);
     ST7735_Unselect(TFT);
