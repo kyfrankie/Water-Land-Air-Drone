@@ -12,6 +12,7 @@
 
 typedef struct {
     UART_HandleTypeDef* huart;
+    uint8_t rxbuff[55];
     double angle_x, angle_y, angle_z, accel_x, accel_y, accel_z, angularV_x, angularV_y, angularV_z,
              magnet_x, magnet_y, magnet_z;
     int32_t altitude;

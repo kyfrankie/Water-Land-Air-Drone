@@ -3,6 +3,7 @@
 //
 
 #include "imu.h"
+#include "main.h"
 
 void UL_IMU_Init(UL_IMU_typedef* IMU, UART_HandleTypeDef* huart){
     IMU->huart = huart;
@@ -17,37 +18,35 @@ void UL_IMU_SetUp(UL_IMU_typedef* IMU){
 }
 
 void UL_IMU_Read(UL_IMU_typedef* IMU){
-    uint8_t rxbuff[55];
-    HAL_UART_Receive(IMU->huart, rxbuff, 55, HAL_MAX_DELAY);
     for (uint8_t i = 0; i < 55; i++){
-        if (rxbuff[i] == 0x55){
-            switch (rxbuff[i+1]){
+        if (IMU->rxbuff[i] == 0x55){
+            switch (IMU->rxbuff[i+1]){
                 case 0x51 :
-                    IMU->accel_x = (short)(rxbuff[i+3] << 8 | rxbuff[i+2]) / 32768.0*16.0*9.8;
-                    IMU->accel_y = (short)(rxbuff[i+5] << 8 | rxbuff[i+4]) / 32768.0*16.0*9.8;
-                    IMU->accel_z = (short)(rxbuff[i+7] << 8 | rxbuff[i+6]) / 32768.0*16.0*9.8;
+                    IMU->accel_x = (short)(IMU->rxbuff[i+3] << 8 | IMU->rxbuff[i+2]) / 32768.0*16.0*9.8;
+                    IMU->accel_y = (short)(IMU->rxbuff[i+5] << 8 | IMU->rxbuff[i+4]) / 32768.0*16.0*9.8;
+                    IMU->accel_z = (short)(IMU->rxbuff[i+7] << 8 | IMU->rxbuff[i+6]) / 32768.0*16.0*9.8;
                     i += 10;
                     break;
                 case 0x52 :
-                    IMU->angularV_x = (short)(rxbuff[i+3] << 8 | rxbuff[i+2]) / 32768.0*2000.0;
-                    IMU->angularV_y = (short)(rxbuff[i+5] << 8 | rxbuff[i+4]) / 32768.0*2000.0;
-                    IMU->angularV_z = (short)(rxbuff[i+7] << 8 | rxbuff[i+6]) / 32768.0*2000.0;
+                    IMU->angularV_x = (short)(IMU->rxbuff[i+3] << 8 | IMU->rxbuff[i+2]) / 32768.0*2000.0;
+                    IMU->angularV_y = (short)(IMU->rxbuff[i+5] << 8 | IMU->rxbuff[i+4]) / 32768.0*2000.0;
+                    IMU->angularV_z = (short)(IMU->rxbuff[i+7] << 8 | IMU->rxbuff[i+6]) / 32768.0*2000.0;
                     i += 10;
                     break;
                 case 0x53 :
-                    IMU->angle_x = (short)(rxbuff[i+3] << 8 | rxbuff[i+2]) / 32768.0*180.0;
-                    IMU->angle_y = (short)(rxbuff[i+5] << 8 | rxbuff[i+4]) / 32768.0*180.0;
-                    IMU->angle_z = (short)(rxbuff[i+7] << 8 | rxbuff[i+6]) / 32768.0*180.0;
+                    IMU->angle_x = (short)(IMU->rxbuff[i+3] << 8 | IMU->rxbuff[i+2]) / 32768.0*180.0;
+                    IMU->angle_y = (short)(IMU->rxbuff[i+5] << 8 | IMU->rxbuff[i+4]) / 32768.0*180.0;
+                    IMU->angle_z = (short)(IMU->rxbuff[i+7] << 8 | IMU->rxbuff[i+6]) / 32768.0*180.0;
                     i += 10;
                     break;
                 case 0x54 :
-                    IMU->magnet_x = (short)(rxbuff[i+3] << 8 | rxbuff[i+2]);
-                    IMU->magnet_y = (short)(rxbuff[i+5] << 8 | rxbuff[i+4]);
-                    IMU->magnet_z = (short)(rxbuff[i+7] << 8 | rxbuff[i+6]);
+                    IMU->magnet_x = (short)(IMU->rxbuff[i+3] << 8 | IMU->rxbuff[i+2]);
+                    IMU->magnet_y = (short)(IMU->rxbuff[i+5] << 8 | IMU->rxbuff[i+4]);
+                    IMU->magnet_z = (short)(IMU->rxbuff[i+7] << 8 | IMU->rxbuff[i+6]);
                     i += 10;
                     break;
                 case 0x56 :
-                    IMU->altitude = rxbuff[i+9] << 24 | rxbuff[i+8] << 16 | rxbuff[i+7] << 8 | rxbuff[i+6];
+                    IMU->altitude = IMU->rxbuff[i+9] << 24 | IMU->rxbuff[i+8] << 16 | IMU->rxbuff[i+7] << 8 | IMU->rxbuff[i+6];
                     i += 10;
                     break;
                 default:
