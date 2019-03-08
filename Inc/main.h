@@ -59,6 +59,7 @@ extern "C" {
 #include "gps.h"
 #include "camera.h"
 #include "brushless.h"
+#include "flight_control.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -96,6 +97,10 @@ void Error_Handler(void);
 #define TFT_DC_GPIO_Port GPIOF
 #define SD_CS_Pin GPIO_PIN_3
 #define SD_CS_GPIO_Port GPIOF
+#define Camera_OE_Pin GPIO_PIN_4
+#define Camera_OE_GPIO_Port GPIOF
+#define Camera_PRST_Pin GPIO_PIN_5
+#define Camera_PRST_GPIO_Port GPIOF
 #define Bluetooth_RX_Pin GPIO_PIN_6
 #define Bluetooth_RX_GPIO_Port GPIOF
 #define Bluetooth_TX_Pin GPIO_PIN_7
@@ -170,6 +175,10 @@ void Error_Handler(void);
 #define IMU_TX_GPIO_Port GPIOB
 #define LD2_Pin GPIO_PIN_7
 #define LD2_GPIO_Port GPIOB
+#define Camera_SIO_C_Pin GPIO_PIN_8
+#define Camera_SIO_C_GPIO_Port GPIOB
+#define Camera_SIO_D_Pin GPIO_PIN_9
+#define Camera_SIO_D_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

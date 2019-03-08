@@ -1,6 +1,9 @@
 /**
   ******************************************************************************
   * @file    stm32h743xx.h
+  * @author  MCD Application Team
+  * @version V1.2.0
+  * @date    29-December-2017
   * @brief   CMSIS STM32H743xx Device Peripheral Access Layer Header File.
   *
   *          This file contains:
