@@ -13,15 +13,12 @@ typedef struct{
     TIM_HandleTypeDef* htim;
     uint32_t channel;
     uint32_t frequency;
-    uint32_t min;
-    uint32_t max;
+    uint32_t period;
 }UL_PWM_typedef;
 
-void UL_PWM_Init(UL_PWM_typedef *PWM, TIM_HandleTypeDef* htim, uint32_t channel, uint32_t min, uint32_t max);
+void UL_PWM_Init(UL_PWM_typedef *PWM, TIM_HandleTypeDef* htim, uint32_t channel, uint32_t period); //period in us
 
-HAL_StatusTypeDef UL_PWM_SetMicros(UL_PWM_typedef* PWM, float micros);
-
-HAL_StatusTypeDef UL_PWM_ServoSetDegree(UL_PWM_typedef* Servo, float degrees);
+void UL_PWM_SetUs(UL_PWM_typedef* PWM, uint32_t us);
 
 
 /**
@@ -29,7 +26,8 @@ HAL_StatusTypeDef UL_PWM_ServoSetDegree(UL_PWM_typedef* Servo, float degrees);
  * @param Auto Reload Value                ARR
  * @param Output Compare Value             CRRx
  * @brief Servo 1.5 ms up time = neutral position
- * @brief Servo pwm frequency 40hz - 200hz, Neutral Position at 1.5ms , 1.0ms - 2.0ms
+ * @brief Servo pwm frequency 40hz - 200hz, Neutral Position at 1.5ms , 1.0ms - 2.0ms SPISERVO Range 0.5-2.5ms
+ * @brief ESC Oneshot125 125-250us
  * @fn Updatefrequency = TIM clk/((PSC+1)*(ARR+1)) https://eleccelerator.com/avr-timer-calculator/
  */
 

@@ -50,6 +50,8 @@
 /* USER CODE BEGIN PTD */
 UL_TFT_typedef Tft;
 UL_IMU_typedef IMU;
+UL_PWM_typedef brushless[4];
+UL_PWM_typedef servo[4];
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -69,7 +71,6 @@ DCMI_HandleTypeDef hdcmi;
 I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi1;
-SPI_HandleTypeDef hspi6;
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
@@ -106,7 +107,6 @@ static void MX_UART8_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_I2C1_Init(void);
-static void MX_SPI6_Init(void);
 static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -157,14 +157,62 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM4_Init();
   MX_I2C1_Init();
-  MX_SPI6_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
+
+  //! IMU init
   UL_IMU_Init(&IMU, &huart4);
   //UL_IMU_SetUp(&IMU);
-  //UL_PWM_Init(&Servo1, &htim2, TIM_CHANNEL_1, 0, 0); //! Servo 100Hz,
+
+  //! Timer init
+  HAL_TIM_Base_Start(&htim2);
+  HAL_TIM_Base_Start(&htim2);
+  UL_PWM_Init(&servo[0], &htim2, TIM_CHANNEL_1, 20000);
+  UL_PWM_Init(&servo[1], &htim2, TIM_CHANNEL_2, 20000);
+  UL_PWM_Init(&servo[2], &htim2, TIM_CHANNEL_3, 20000);
+  UL_PWM_Init(&servo[3], &htim2, TIM_CHANNEL_4, 20000);
+
+  UL_PWM_SetUs(&servo[0], 1500);
+
+  UL_PWM_Init(&brushless[0], &htim1, TIM_CHANNEL_1, 5000);
+  UL_PWM_Init(&brushless[1], &htim1, TIM_CHANNEL_2, 5000);
+  UL_PWM_Init(&brushless[2], &htim1, TIM_CHANNEL_3, 5000);
+  UL_PWM_Init(&brushless[3], &htim1, TIM_CHANNEL_4, 5000);
+
+  HAL_Delay(5000);
+
+  UL_PWM_SetUs(&brushless[0], 2000);
+  UL_PWM_SetUs(&brushless[1], 2000);
+  UL_PWM_SetUs(&brushless[2], 2000);
+  UL_PWM_SetUs(&brushless[3], 2000);
+
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+
+  /*
+  UL_PWM_SetUs(&brushless[0], 2000);
+  UL_PWM_SetUs(&brushless[1], 2000);
+  UL_PWM_SetUs(&brushless[2], 2000);
+  UL_PWM_SetUs(&brushless[3], 2000);
+
+  HAL_Delay(5500);
+
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+
+  UL_PWM_SetUs(&brushless[0], 1000);
+  UL_PWM_SetUs(&brushless[1], 1000);
+  UL_PWM_SetUs(&brushless[2], 1000);
+  UL_PWM_SetUs(&brushless[3], 1000);
+
+  HAL_Delay(8000);
+  */
+
+  UL_PWM_SetUs(&brushless[0], 1000);
+  HAL_Delay(2500);
+
   UL_TFT_ST7735_Init(&Tft, TFT_RST_GPIO_Port, TFT_RST_Pin, TFT_DC_GPIO_Port, TFT_DC_Pin, TFT_CS_GPIO_Port, TFT_CS_Pin, &hspi1);
   UL_TFT_ST7735_FillScreen(&Tft, ST7735_BLACK);
+
+  //! enable IMU
   __HAL_UART_ENABLE(IMU.huart);
   /* USER CODE END 2 */
 
@@ -177,7 +225,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+        UL_PWM_SetUs(&brushless[0], 2000);
     //UL_TFT_ST7735_FillScreen(&Tft, ST7735_GREEN);
     //HAL_Delay(100);
     //HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
@@ -251,13 +300,12 @@ void SystemClock_Config(void)
                               |RCC_PERIPHCLK_UART7|RCC_PERIPHCLK_USART1
                               |RCC_PERIPHCLK_UART8|RCC_PERIPHCLK_UART5
                               |RCC_PERIPHCLK_SPI1|RCC_PERIPHCLK_I2C1
-                              |RCC_PERIPHCLK_SPI6|RCC_PERIPHCLK_USB;
+                              |RCC_PERIPHCLK_USB;
   PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
   PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
   PeriphClkInitStruct.Usart16ClockSelection = RCC_USART16CLKSOURCE_D2PCLK2;
   PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_D2PCLK1;
   PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_HSI48;
-  PeriphClkInitStruct.Spi6ClockSelection = RCC_SPI6CLKSOURCE_D3PCLK1;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -317,7 +365,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x10909CEC;
+  hi2c1.Init.Timing = 0x30909DEC;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -396,54 +444,6 @@ static void MX_SPI1_Init(void)
 }
 
 /**
-  * @brief SPI6 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_SPI6_Init(void)
-{
-
-  /* USER CODE BEGIN SPI6_Init 0 */
-
-  /* USER CODE END SPI6_Init 0 */
-
-  /* USER CODE BEGIN SPI6_Init 1 */
-
-  /* USER CODE END SPI6_Init 1 */
-  /* SPI6 parameter configuration*/
-  hspi6.Instance = SPI6;
-  hspi6.Init.Mode = SPI_MODE_MASTER;
-  hspi6.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi6.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi6.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi6.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi6.Init.NSS = SPI_NSS_SOFT;
-  hspi6.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
-  hspi6.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi6.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi6.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi6.Init.CRCPolynomial = 7;
-  hspi6.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
-  hspi6.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
-  hspi6.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
-  hspi6.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
-  hspi6.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
-  hspi6.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
-  hspi6.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
-  hspi6.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
-  hspi6.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
-  hspi6.Init.IOSwap = SPI_IO_SWAP_DISABLE;
-  if (HAL_SPI_Init(&hspi6) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN SPI6_Init 2 */
-
-  /* USER CODE END SPI6_Init 2 */
-
-}
-
-/**
   * @brief TIM1 Initialization Function
   * @param None
   * @retval None
@@ -464,9 +464,9 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 0;
+  htim1.Init.Prescaler = 9;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 0;
+  htim1.Init.Period = 39999;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -555,9 +555,9 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
+  htim2.Init.Prescaler = 99;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 0;
+  htim2.Init.Period = 15999;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -580,7 +580,7 @@ static void MX_TIM2_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 0;
+  sConfigOC.Pulse = 1200;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
