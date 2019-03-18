@@ -11,11 +11,11 @@ User Library - /usr
 Camera Library
 Laser Library
 SD Card Library
-Flight Control
 
 ON GOING  
-IMU Library
+Flight Control
 
 FINISHED  
 TFT Library
 PWM Library
+IMU Library
