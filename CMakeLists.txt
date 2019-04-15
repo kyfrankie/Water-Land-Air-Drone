@@ -39,10 +39,10 @@ set(CMAKE_CXX_STANDARD 11)
 add_definitions(-D__weak=__attribute__\(\(weak\)\) -D__packed=__attribute__\(\(__packed__\)\) -DUSE_HAL_DRIVER -DSTM32H743xx)
 
 #add "usr/inc/*.*" "usr/src/*.*"
-file(GLOB_RECURSE SOURCES "startup/*.*" "Drivers/*.*" "Src/*.*" "Inc/*.*" "usr/inc/*.*" "usr/src/*.*")
+file(GLOB_RECURSE SOURCES "Middlewares/*.*" "startup/*.*" "Drivers/*.*" "Src/*.*" "Inc/*.*" "usr/inc/*.*" "usr/src/*.*" "Middlewares/*.*")
 
 #add usr/inc
-include_directories(Inc Drivers/STM32H7xx_HAL_Driver/Inc Drivers/STM32H7xx_HAL_Driver/Inc/Legacy Drivers/CMSIS/Device/ST/STM32H7xx/Include Drivers/CMSIS/Include usr/inc)
+include_directories(Inc Drivers/STM32H7xx_HAL_Driver/Inc Drivers/STM32H7xx_HAL_Driver/Inc/Legacy Drivers/CMSIS/Device/ST/STM32H7xx/Include Drivers/CMSIS/Include Utilities/JPEG Middlewares/Third_Party/FatFs/src usr/inc Middlewares)
 
 add_executable(${PROJECT_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})
 

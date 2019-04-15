@@ -68,7 +68,7 @@
 /* #define HAL_HASH_MODULE_ENABLED   */
 /* #define HAL_HRTIM_MODULE_ENABLED   */
 /* #define HAL_HSEM_MODULE_ENABLED   */
-/* #define HAL_JPEG_MODULE_ENABLED   */
+#define HAL_JPEG_MODULE_ENABLED
 /* #define HAL_OPAMP_MODULE_ENABLED   */
 /* #define HAL_I2S_MODULE_ENABLED   */
 /* #define HAL_SMBUS_MODULE_ENABLED   */
@@ -94,7 +94,7 @@
 /* #define HAL_HCD_MODULE_ENABLED   */
 /* #define HAL_DFSDM_MODULE_ENABLED   */
 /* #define HAL_DSI_MODULE_ENABLED   */
-/* #define HAL_JPEG_MODULE_ENABLED   */
+#define HAL_JPEG_MODULE_ENABLED
 /* #define HAL_MDIOS_MODULE_ENABLED   */
 /* #define HAL_EXTI_MODULE_ENABLED   */
 #define HAL_GPIO_MODULE_ENABLED

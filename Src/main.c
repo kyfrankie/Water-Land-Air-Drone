@@ -40,6 +40,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "fatfs.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -52,6 +53,8 @@ UL_TFT_typedef Tft;
 UL_IMU_typedef IMU;
 UL_PWM_typedef brushless[4];
 UL_PWM_typedef servo[4];
+UL_RC_typedef RC;
+UL_flight_control_typedef FC;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -69,6 +72,8 @@ UL_PWM_typedef servo[4];
 DCMI_HandleTypeDef hdcmi;
 
 I2C_HandleTypeDef hi2c1;
+
+JPEG_HandleTypeDef hjpeg;
 
 SPI_HandleTypeDef hspi1;
 
@@ -108,6 +113,7 @@ static void MX_USART1_UART_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_SPI1_Init(void);
+static void MX_JPEG_Init(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 
@@ -115,6 +121,46 @@ static void MX_SPI1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+    UNUSED(huart);
+    if (huart->Instance == IMU.huart->Instance) {
+        UL_RC_Get_us(&RC);
+        UL_IMU_Read(&IMU);
+        UL_flight_control_pid_controller(&FC);
+        UL_flight_control_print(&FC);
+    }
+
+    HAL_UART_Receive_IT(huart, (uint8_t *) IMU.rxbuff, sizeof(IMU.rxbuff));
+    HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+}
+
+void UL_brushless_setup(){
+    HAL_Delay(5000);
+
+    UL_PWM_SetUs(&brushless[0], 2000);
+    UL_PWM_SetUs(&brushless[1], 2000);
+    UL_PWM_SetUs(&brushless[2], 2000);
+    UL_PWM_SetUs(&brushless[3], 2000);
+
+    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+
+
+    UL_PWM_SetUs(&brushless[0], 2000);
+    UL_PWM_SetUs(&brushless[1], 2000);
+    UL_PWM_SetUs(&brushless[2], 2000);
+    UL_PWM_SetUs(&brushless[3], 2000);
+
+    HAL_Delay(5500);
+
+    UL_PWM_SetUs(&brushless[0], 1000);
+    UL_PWM_SetUs(&brushless[1], 1000);
+    UL_PWM_SetUs(&brushless[2], 1000);
+    UL_PWM_SetUs(&brushless[3], 1000);
+
+    HAL_Delay(5500);
+
+    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+}
 
 /* USER CODE END 0 */
 
@@ -158,59 +204,63 @@ int main(void)
   MX_TIM4_Init();
   MX_I2C1_Init();
   MX_SPI1_Init();
+  MX_FATFS_Init();
+  MX_JPEG_Init();
   /* USER CODE BEGIN 2 */
+
+  //! Flight Control Init
+  UL_flight_control_init(&FC);
 
   //! IMU init
   UL_IMU_Init(&IMU, &huart4);
   //UL_IMU_SetUp(&IMU);
 
+  //! RC Init
+  UL_RC_Init(&RC, &htim3);
+
+  //! TFT init
+  UL_TFT_ST7735_Init(&Tft, TFT_RST_GPIO_Port, TFT_RST_Pin, TFT_DC_GPIO_Port, TFT_DC_Pin, TFT_CS_GPIO_Port, TFT_CS_Pin, &hspi1);
+  UL_TFT_ST7735_FillScreen(&Tft, ST7735_BLACK);
+
   //! Timer init
   HAL_TIM_Base_Start(&htim2);
-  HAL_TIM_Base_Start(&htim2);
-  UL_PWM_Init(&servo[0], &htim2, TIM_CHANNEL_1, 20000);
-  UL_PWM_Init(&servo[1], &htim2, TIM_CHANNEL_2, 20000);
-  UL_PWM_Init(&servo[2], &htim2, TIM_CHANNEL_3, 20000);
-  UL_PWM_Init(&servo[3], &htim2, TIM_CHANNEL_4, 20000);
+  UL_PWM_Init(&servo[0], &htim2, TIM_CHANNEL_2, 20000);
+  UL_PWM_Init(&servo[1], &htim2, TIM_CHANNEL_3, 20000);
+  UL_PWM_Init(&servo[2], &htim2, TIM_CHANNEL_4, 20000);
+  UL_PWM_Init(&servo[3], &htim2, TIM_CHANNEL_1, 20000);
+  UL_PWM_SetUs(&servo[0], 1300);
+  UL_PWM_SetUs(&servo[1], 1300);
+  UL_PWM_SetUs(&servo[2], 1300);
+  UL_PWM_SetUs(&servo[3], 1300);
 
-  UL_PWM_SetUs(&servo[0], 1500);
+  HAL_Delay(1000);
+  UL_PWM_SetUs(&servo[0], 1550);
+  UL_PWM_SetUs(&servo[1], 1500);
+  UL_PWM_SetUs(&servo[2], 1550);
+  UL_PWM_SetUs(&servo[3], 1550);
 
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+  HAL_TIM_Base_Start(&htim1);
   UL_PWM_Init(&brushless[0], &htim1, TIM_CHANNEL_1, 5000);
   UL_PWM_Init(&brushless[1], &htim1, TIM_CHANNEL_2, 5000);
   UL_PWM_Init(&brushless[2], &htim1, TIM_CHANNEL_3, 5000);
   UL_PWM_Init(&brushless[3], &htim1, TIM_CHANNEL_4, 5000);
 
-  HAL_Delay(5000);
-
-  UL_PWM_SetUs(&brushless[0], 2000);
-  UL_PWM_SetUs(&brushless[1], 2000);
-  UL_PWM_SetUs(&brushless[2], 2000);
-  UL_PWM_SetUs(&brushless[3], 2000);
-
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-
-  /*
-  UL_PWM_SetUs(&brushless[0], 2000);
-  UL_PWM_SetUs(&brushless[1], 2000);
-  UL_PWM_SetUs(&brushless[2], 2000);
-  UL_PWM_SetUs(&brushless[3], 2000);
-
-  HAL_Delay(5500);
-
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  //UL_brushless_setup();
 
   UL_PWM_SetUs(&brushless[0], 1000);
   UL_PWM_SetUs(&brushless[1], 1000);
   UL_PWM_SetUs(&brushless[2], 1000);
   UL_PWM_SetUs(&brushless[3], 1000);
-
-  HAL_Delay(8000);
-  */
-
-  UL_PWM_SetUs(&brushless[0], 1000);
-  HAL_Delay(2500);
-
-  UL_TFT_ST7735_Init(&Tft, TFT_RST_GPIO_Port, TFT_RST_Pin, TFT_DC_GPIO_Port, TFT_DC_Pin, TFT_CS_GPIO_Port, TFT_CS_Pin, &hspi1);
-  UL_TFT_ST7735_FillScreen(&Tft, ST7735_BLACK);
+  HAL_Delay(5000);
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  HAL_Delay(1000);
+  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+  HAL_Delay(4000);
+  UL_PWM_SetUs(&brushless[0], 1500);
+  UL_PWM_SetUs(&brushless[1], 1500);
+  UL_PWM_SetUs(&brushless[2], 1500);
+  UL_PWM_SetUs(&brushless[3], 1500);
 
   //! enable IMU
   __HAL_UART_ENABLE(IMU.huart);
@@ -225,14 +275,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-        UL_PWM_SetUs(&brushless[0], 2000);
-    //UL_TFT_ST7735_FillScreen(&Tft, ST7735_GREEN);
-    //HAL_Delay(100);
-    //HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-    //UL_TFT_ST7735_FillScreen(&Tft, ST7735_BLUE);
-    //HAL_Delay(100);
-  //UL_IMU_Displace(&IMU, &Tft);
 
   }
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
@@ -392,6 +434,32 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief JPEG Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_JPEG_Init(void)
+{
+
+  /* USER CODE BEGIN JPEG_Init 0 */
+
+  /* USER CODE END JPEG_Init 0 */
+
+  /* USER CODE BEGIN JPEG_Init 1 */
+
+  /* USER CODE END JPEG_Init 1 */
+  hjpeg.Instance = JPEG;
+  if (HAL_JPEG_Init(&hjpeg) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN JPEG_Init 2 */
+
+  /* USER CODE END JPEG_Init 2 */
 
 }
 
@@ -626,9 +694,9 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 0;
+  htim3.Init.Prescaler = 79;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 0;
+  htim3.Init.Period = 65535;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -650,7 +718,7 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
-  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
+  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_BOTHEDGE;
   sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
   sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
   sConfigIC.ICFilter = 0;
@@ -1090,16 +1158,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-  UNUSED(huart);
-  UL_TFT_ST7735_WriteString(&Tft, 1, 1, "IMU IT", Font_7x10, ST7735_WHITE, ST7735_BLACK);
-  if (huart->Instance == IMU.huart->Instance) {
-    UL_IMU_Read(&IMU);
-    UL_IMU_Displace(&IMU);
-  }
-  HAL_UART_Receive_IT(huart, (uint8_t *) IMU.rxbuff, sizeof(IMU.rxbuff));
-  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-}
+
 /* USER CODE END 4 */
 
 /**

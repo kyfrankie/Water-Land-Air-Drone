@@ -36,9 +36,9 @@ void UL_IMU_Read(UL_IMU_typedef* IMU){
                     i += 10;
                     break;
                 case 0x53 :
-                    IMU->angle_x = (short)(IMU->rxbuff[i+3] << 8 | IMU->rxbuff[i+2]) / 32768.0*180.0;
-                    IMU->angle_y = (short)(IMU->rxbuff[i+5] << 8 | IMU->rxbuff[i+4]) / 32768.0*180.0;
-                    IMU->angle_z = (short)(IMU->rxbuff[i+7] << 8 | IMU->rxbuff[i+6]) / 32768.0*180.0;
+                    IMU->roll = (short)(IMU->rxbuff[i+3] << 8 | IMU->rxbuff[i+2]) / 32768.0*180.0;
+                    IMU->pitch = (short)(IMU->rxbuff[i+5] << 8 | IMU->rxbuff[i+4]) / 32768.0*180.0;
+                    IMU->yaw = (short)(IMU->rxbuff[i+7] << 8 | IMU->rxbuff[i+6]) / 32768.0*180.0;
                     i += 10;
                     break;
                 case 0x54 :
@@ -67,18 +67,18 @@ void UL_IMU_Write(UL_IMU_typedef* IMU, uint8_t cmd, uint8_t option1, uint8_t opt
 void UL_IMU_Displace(UL_IMU_typedef* IMU){
     extern UL_TFT_typedef Tft;
 
-    UL_TFT_ST7735_WriteString(&Tft, 1, 1, "Angle", Font_7x10, ST7735_WHITE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 45, 1, abs((int)(IMU->angle_x)), Font_7x10, ST7735_BLUE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 75, 1, abs((int)(IMU->angle_y)), Font_7x10, ST7735_BLUE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 105, 1, abs((int)(IMU->angle_z)), Font_7x10, ST7735_BLUE, ST7735_BLACK);
+    UL_TFT_ST7735_WriteString(&Tft, 1, 1, "Angle", FONT_7x10, ST7735_WHITE, ST7735_BLACK);
+    UL_TFT_ST7735_WriteNumber(&Tft, 45, 1, abs((int)(IMU->roll)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
+    UL_TFT_ST7735_WriteNumber(&Tft, 75, 1, abs((int)(IMU->pitch)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
+    UL_TFT_ST7735_WriteNumber(&Tft, 105, 1, abs((int)(IMU->yaw)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
 
-    UL_TFT_ST7735_WriteString(&Tft, 1, 15, "Accel", Font_7x10, ST7735_WHITE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 45, 15, abs((int)(IMU->accel_x)), Font_7x10, ST7735_BLUE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 75, 15, abs((int)(IMU->accel_y)), Font_7x10, ST7735_BLUE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 105, 15, abs((int)(IMU->accel_z)), Font_7x10, ST7735_BLUE, ST7735_BLACK);
+    UL_TFT_ST7735_WriteString(&Tft, 1, 15, "Accel", FONT_7x10, ST7735_WHITE, ST7735_BLACK);
+    UL_TFT_ST7735_WriteNumber(&Tft, 45, 15, abs((int)(IMU->accel_x)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
+    UL_TFT_ST7735_WriteNumber(&Tft, 75, 15, abs((int)(IMU->accel_y)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
+    UL_TFT_ST7735_WriteNumber(&Tft, 105, 15, abs((int)(IMU->accel_z)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
 
-    UL_TFT_ST7735_WriteString(&Tft, 1, 30, "AnguV", Font_7x10, ST7735_WHITE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 45, 30, abs((int)(IMU->angularV_x)), Font_7x10, ST7735_BLUE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 75, 30, abs((int)(IMU->angularV_y)), Font_7x10, ST7735_BLUE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 105, 30, abs((int)(IMU->angularV_z)), Font_7x10, ST7735_BLUE, ST7735_BLACK);
+    UL_TFT_ST7735_WriteString(&Tft, 1, 30, "AnguV", FONT_7x10, ST7735_WHITE, ST7735_BLACK);
+    UL_TFT_ST7735_WriteNumber(&Tft, 45, 30, abs((int)(IMU->angularV_x)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
+    UL_TFT_ST7735_WriteNumber(&Tft, 75, 30, abs((int)(IMU->angularV_y)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
+    UL_TFT_ST7735_WriteNumber(&Tft, 105, 30, abs((int)(IMU->angularV_z)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
 }

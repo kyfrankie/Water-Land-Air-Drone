@@ -59,7 +59,7 @@ extern "C" {
 #include "gps.h"
 #include "camera.h"
 #include "brushless.h"
-//#include "flight_control.h"
+#include "flight_control.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

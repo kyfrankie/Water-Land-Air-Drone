@@ -1,7 +1,6 @@
 //
 // Created by HUI Ka Yiu on 2019-03-08.
 //
-/*
 
 #ifndef PLANE_FLIGHT_CONTROL_H
 #define PLANE_FLIGHT_CONTROL_H
@@ -41,19 +40,21 @@
 #define MIN_YAW (-PI)
 #define MAX_YAW (PI)
 
+extern UL_IMU_typedef IMU;
+extern UL_RC_typedef RC;
+extern UL_PWM_typedef brushless[4];
+extern UL_TFT_typedef Tft;
+
 typedef struct {
-    UL_IMU_typedef* IMU;
-    double error[3] = {0,0,0};
-    double error_sum[3] = {0,0,0};
-    double delta_error[3] = {0,0,0};
-    double previous_error[3] = {0,0,0};
-    double pid[3] = {0,0,0};
+    double error[3], error_sum[3], delta_error[3], previous_error[3], pid[3];
     double speed_x, speed_y, speed_z;
     double displacement_x, displacement_y, displacement_z;
 
 }UL_flight_control_typedef;
 
+void UL_flight_control_init(UL_flight_control_typedef* flightControl);
 
-void UL_flight_control_pid_controller(UL_flight_control_typedef* flight_control, );
+void UL_flight_control_print(UL_flight_control_typedef* flight_control);
+
+void UL_flight_control_pid_controller(UL_flight_control_typedef* flight_control);
 #endif //PLANE_FLIGHT_CONTROL_H
-*/
