@@ -13,7 +13,7 @@ void UL_IMU_Init(UL_IMU_typedef* IMU, UART_HandleTypeDef* huart){
 }
 
 void UL_IMU_SetUp(UL_IMU_typedef* IMU){
-    UL_IMU_Write(IMU, RSW, 0x5E, 0x00);         //feedback data package
+    UL_IMU_Write(IMU, RSW, 0xDE, 0x00);         //feedback data package
     UL_IMU_Write(IMU, RRATE, 0x06, 0x00);       //feedback rate
     UL_IMU_Write(IMU, BAUD, 0x06, 0x00);        //BAUD rate
     UL_IMU_Write(IMU, SAVE, 0x00, 0x00);        //Save
@@ -51,6 +51,8 @@ void UL_IMU_Read(UL_IMU_typedef* IMU){
                     IMU->altitude = IMU->rxbuff[i+9] << 24 | IMU->rxbuff[i+8] << 16 | IMU->rxbuff[i+7] << 8 | IMU->rxbuff[i+6];
                     i += 10;
                     break;
+                case 0x57:
+                    
                 default:
                     break;
             }

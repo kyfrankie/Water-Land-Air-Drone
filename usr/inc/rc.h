@@ -12,8 +12,10 @@
 
 typedef struct {
     TIM_HandleTypeDef* htim;
-    double yaw, pitch, roll;
+    uint32_t yaw, pitch, roll;
     uint32_t throttle;
+    uint8_t CaptureIndex[4];
+    uint16_t Capture1[4], Capture2[4], diffCapture[4];
 }UL_RC_typedef;
 
 void UL_RC_Init(UL_RC_typedef* RC, TIM_HandleTypeDef* htim);

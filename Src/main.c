@@ -124,15 +124,49 @@ static void MX_JPEG_Init(void);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
     UNUSED(huart);
     if (huart->Instance == IMU.huart->Instance) {
-        UL_RC_Get_us(&RC);
+        //UL_RC_Get_us(&RC);
         UL_IMU_Read(&IMU);
         UL_flight_control_pid_controller(&FC);
-        UL_flight_control_print(&FC);
     }
 
     HAL_UART_Receive_IT(huart, (uint8_t *) IMU.rxbuff, sizeof(IMU.rxbuff));
     HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
 }
+
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+    uint8_t index;
+    uint32_t Channel;
+    switch (htim->Channel){
+        case HAL_TIM_ACTIVE_CHANNEL_1:
+            Channel = TIM_CHANNEL_1;
+            index = 0;
+            break;
+        case HAL_TIM_ACTIVE_CHANNEL_2:
+            Channel = TIM_CHANNEL_2;
+            index = 1;
+            break;
+        case HAL_TIM_ACTIVE_CHANNEL_3:
+            Channel = TIM_CHANNEL_3;
+            index = 2;
+            break;
+        case HAL_TIM_ACTIVE_CHANNEL_4:
+            Channel = TIM_CHANNEL_4;
+            index = 3;
+            break;
+    }
+    if (RC.CaptureIndex[index] == 0) {
+        /* Get the 1st Input Capture value */
+        RC.Capture1[index] = __HAL_TIM_GET_COMPARE(htim, Channel);
+        RC.CaptureIndex[index] = 1;
+    } else if (RC.CaptureIndex[index] == 1) {
+        /* Get the 2nd Input Capture value */
+        RC.Capture2[index] = __HAL_TIM_GET_COMPARE(htim, Channel);
+        RC.diffCapture[index] = RC.Capture2[index] - RC.Capture1[index];
+        RC.CaptureIndex[index] = 0;
+    }
+}
+
 
 void UL_brushless_setup(){
     HAL_Delay(5000);
@@ -215,14 +249,12 @@ int main(void)
   UL_IMU_Init(&IMU, &huart4);
   //UL_IMU_SetUp(&IMU);
 
-  //! RC Init
-  UL_RC_Init(&RC, &htim3);
-
-  //! TFT init
+    //! TFT init
   UL_TFT_ST7735_Init(&Tft, TFT_RST_GPIO_Port, TFT_RST_Pin, TFT_DC_GPIO_Port, TFT_DC_Pin, TFT_CS_GPIO_Port, TFT_CS_Pin, &hspi1);
   UL_TFT_ST7735_FillScreen(&Tft, ST7735_BLACK);
 
   //! Timer init
+  
   HAL_TIM_Base_Start(&htim2);
   UL_PWM_Init(&servo[0], &htim2, TIM_CHANNEL_2, 20000);
   UL_PWM_Init(&servo[1], &htim2, TIM_CHANNEL_3, 20000);
@@ -239,7 +271,7 @@ int main(void)
   UL_PWM_SetUs(&servo[2], 1550);
   UL_PWM_SetUs(&servo[3], 1550);
 
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
   HAL_TIM_Base_Start(&htim1);
   UL_PWM_Init(&brushless[0], &htim1, TIM_CHANNEL_1, 5000);
   UL_PWM_Init(&brushless[1], &htim1, TIM_CHANNEL_2, 5000);
@@ -253,17 +285,15 @@ int main(void)
   UL_PWM_SetUs(&brushless[2], 1000);
   UL_PWM_SetUs(&brushless[3], 1000);
   HAL_Delay(5000);
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-  HAL_Delay(1000);
-  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-  HAL_Delay(4000);
-  UL_PWM_SetUs(&brushless[0], 1500);
-  UL_PWM_SetUs(&brushless[1], 1500);
-  UL_PWM_SetUs(&brushless[2], 1500);
-  UL_PWM_SetUs(&brushless[3], 1500);
+  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+
 
   //! enable IMU
   __HAL_UART_ENABLE(IMU.huart);
+
+  //! RC Init
+  UL_RC_Init(&RC, &htim3);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -275,7 +305,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
+    UL_flight_control_print(&FC);
   }
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
   /* USER CODE END 3 */
