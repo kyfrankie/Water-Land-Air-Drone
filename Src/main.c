@@ -54,7 +54,7 @@ UL_IMU_typedef IMU;
 UL_PWM_typedef brushless[4];
 UL_PWM_typedef servo[4];
 UL_RC_typedef RC;
-UL_flight_control_typedef FC;
+UL_flight_control_typedef FC = {0};
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -124,9 +124,12 @@ static void MX_JPEG_Init(void);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
     UNUSED(huart);
     if (huart->Instance == IMU.huart->Instance) {
-        //UL_RC_Get_us(&RC);
         UL_IMU_Read(&IMU);
-        UL_flight_control_pid_controller(&FC);
+        //! Flight Control Init
+        if (FC.ready == 0)
+            UL_flight_control_init(&FC);
+        if (FC.ready == 1)
+            UL_flight_control_pid_controller(&FC);
     }
 
     HAL_UART_Receive_IT(huart, (uint8_t *) IMU.rxbuff, sizeof(IMU.rxbuff));
@@ -242,9 +245,6 @@ int main(void)
   MX_JPEG_Init();
   /* USER CODE BEGIN 2 */
 
-  //! Flight Control Init
-  UL_flight_control_init(&FC);
-
   //! IMU init
   UL_IMU_Init(&IMU, &huart4);
   //UL_IMU_SetUp(&IMU);
@@ -260,6 +260,7 @@ int main(void)
   UL_PWM_Init(&servo[1], &htim2, TIM_CHANNEL_3, 20000);
   UL_PWM_Init(&servo[2], &htim2, TIM_CHANNEL_4, 20000);
   UL_PWM_Init(&servo[3], &htim2, TIM_CHANNEL_1, 20000);
+//  UL_PWM_SetUs()
   UL_PWM_SetUs(&servo[0], 1300);
   UL_PWM_SetUs(&servo[1], 1300);
   UL_PWM_SetUs(&servo[2], 1300);
@@ -287,7 +288,6 @@ int main(void)
   HAL_Delay(5000);
   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
 
-
   //! enable IMU
   __HAL_UART_ENABLE(IMU.huart);
 
@@ -305,6 +305,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
     UL_flight_control_print(&FC);
   }
 #pragma clang diagnostic ignored "-Wmissing-noreturn"

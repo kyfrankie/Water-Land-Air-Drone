@@ -65,22 +65,3 @@ void UL_IMU_Write(UL_IMU_typedef* IMU, uint8_t cmd, uint8_t option1, uint8_t opt
     HAL_UART_Transmit(IMU->huart, data, sizeof(data), HAL_MAX_DELAY);
     HAL_Delay(100);
 }
-
-void UL_IMU_Displace(UL_IMU_typedef* IMU){
-    extern UL_TFT_typedef Tft;
-
-    UL_TFT_ST7735_WriteString(&Tft, 1, 1, "Angle", FONT_7x10, ST7735_WHITE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 45, 1, abs((int)(IMU->roll)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 75, 1, abs((int)(IMU->pitch)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 105, 1, abs((int)(IMU->yaw)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
-
-    UL_TFT_ST7735_WriteString(&Tft, 1, 15, "Accel", FONT_7x10, ST7735_WHITE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 45, 15, abs((int)(IMU->accel_x)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 75, 15, abs((int)(IMU->accel_y)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 105, 15, abs((int)(IMU->accel_z)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
-
-    UL_TFT_ST7735_WriteString(&Tft, 1, 30, "AnguV", FONT_7x10, ST7735_WHITE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 45, 30, abs((int)(IMU->angularV_x)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 75, 30, abs((int)(IMU->angularV_y)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
-    UL_TFT_ST7735_WriteNumber(&Tft, 105, 30, abs((int)(IMU->angularV_z)), FONT_7x10, ST7735_BLUE, ST7735_BLACK);
-}

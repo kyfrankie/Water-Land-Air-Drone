@@ -22,6 +22,5 @@ void UL_IMU_Init(UL_IMU_typedef* IMU, UART_HandleTypeDef* huart);
 void UL_IMU_SetUp(UL_IMU_typedef* IMU);
 void UL_IMU_Read(UL_IMU_typedef* IMU);
 void UL_IMU_Write(UL_IMU_typedef* IMU, uint8_t cmd, uint8_t option1, uint8_t option2);
-void UL_IMU_Displace(UL_IMU_typedef* IMU);
 
 #endif //PLANE_IMU_H

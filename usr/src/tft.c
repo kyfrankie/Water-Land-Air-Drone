@@ -235,7 +235,7 @@ void UL_TFT_ST7735_WriteString(UL_TFT_typedef *TFT, uint16_t x, uint16_t y, cons
 void UL_TFT_ST7735_WriteNumber(UL_TFT_typedef *TFT, uint16_t x, uint16_t y, const uint32_t num, FontDef font,
                                uint16_t color, uint16_t bgcolor){
     char a;
-    sprintf(&a,"%lu", num);
+    sprintf(&a,"%03lu", num); //! fixed 3 digits
     UL_TFT_ST7735_WriteString(TFT, x, y, &a, font, color, bgcolor);
 }
 

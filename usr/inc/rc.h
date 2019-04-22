@@ -12,14 +12,17 @@
 
 typedef struct {
     TIM_HandleTypeDef* htim;
-    uint32_t yaw, pitch, roll;
-    uint32_t throttle;
     uint8_t CaptureIndex[4];
     uint16_t Capture1[4], Capture2[4], diffCapture[4];
 }UL_RC_typedef;
 
-void UL_RC_Init(UL_RC_typedef* RC, TIM_HandleTypeDef* htim);
+enum RC_Map{
+    RC_THROTTLE = 3,
+    RC_YAW = 1,
+    RC_PITCH = 0,
+    RC_ROLL = 2
+};
 
-void UL_RC_Get_us(UL_RC_typedef* RC);
+void UL_RC_Init(UL_RC_typedef* RC, TIM_HandleTypeDef* htim);
 
 #endif //PLANE_RC_H
