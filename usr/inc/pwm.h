@@ -20,6 +20,7 @@ void UL_PWM_Init(UL_PWM_typedef *PWM, TIM_HandleTypeDef* htim, uint32_t channel,
 
 void UL_PWM_SetUs(UL_PWM_typedef* PWM, uint32_t us);
 
+uint32_t UL_PWM_GetUs(UL_PWM_typedef* PWM);
 
 /**
  * @param Prescalar                        PSC

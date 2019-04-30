@@ -14,3 +14,8 @@ void UL_PWM_Init(UL_PWM_typedef* PWM, TIM_HandleTypeDef* htim, uint32_t channel,
 void UL_PWM_SetUs(UL_PWM_typedef* PWM, uint32_t us){
     __HAL_TIM_SET_COMPARE(PWM->htim, PWM->channel, (uint32_t)((PWM->htim->Instance->ARR-1) * (double)(us) / (double)(PWM->period)));
 }
+
+
+uint32_t UL_PWM_GetUs(UL_PWM_typedef* PWM){
+    return __HAL_TIM_GET_COMPARE(PWM->htim, PWM->channel);
+}

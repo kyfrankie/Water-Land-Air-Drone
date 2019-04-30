@@ -11,18 +11,21 @@
 
 
 typedef struct {
-    TIM_HandleTypeDef* htim;
-    uint8_t CaptureIndex[4];
-    uint16_t Capture1[4], Capture2[4], diffCapture[4];
+    TIM_HandleTypeDef* htim1;
+    TIM_HandleTypeDef* htim2;
+    uint8_t CaptureIndex[6];
+    uint16_t Capture1[6], diffCapture[6];
 }UL_RC_typedef;
 
 enum RC_Map{
     RC_THROTTLE = 3,
     RC_YAW = 1,
     RC_PITCH = 0,
-    RC_ROLL = 2
+    RC_ROLL = 2,
+    RC_MODE = 4,
+    RC_ONOFF = 5
 };
 
-void UL_RC_Init(UL_RC_typedef* RC, TIM_HandleTypeDef* htim);
+void UL_RC_Init(UL_RC_typedef* RC, TIM_HandleTypeDef* htim1, TIM_HandleTypeDef* htim2);
 
 #endif //PLANE_RC_H

@@ -39,10 +39,10 @@ set(CMAKE_CXX_STANDARD 11)
 add_definitions(${defines})
 
 #add "usr/inc/*.*" "usr/src/*.*"
-file(GLOB_RECURSE SOURCES ${sources} "usr/inc/*.*" "usr/src/*.*" "Middlewares/*.*")
+file(GLOB_RECURSE SOURCES ${sources} "usr/inc/*.*" "usr/src/*.*")
 
 #add usr/inc
-include_directories(${includes} usr/inc Middlewares)
+include_directories(${includes} usr/inc)
 
 add_executable($${PROJECT_NAME}.elf $${SOURCES} $${LINKER_SCRIPT})
 

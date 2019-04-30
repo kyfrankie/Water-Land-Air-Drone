@@ -8,7 +8,6 @@
 #define IMU_I2C
 #define IMU_UART
 
-#ifdef IMU_I2C
 
 #define SAVE 			0x00
 #define CALSW 		0x01
@@ -85,6 +84,5 @@
 #define DIO_MODE_DOPWM 4
 #define DIO_MODE_GPS 5
 
-#endif
 
 #endif //PLANE_IMU_DEFINES_H

@@ -14,7 +14,7 @@ typedef struct {
     UART_HandleTypeDef* huart;
     uint8_t rxbuff[66];
     double roll, pitch, yaw, accel_x, accel_y, accel_z, angularV_x, angularV_y, angularV_z,
-             magnet_x, magnet_y, magnet_z, lon, lat;
+            magnet_x, magnet_y, magnet_z, lon, lat;
     int32_t altitude;
 }UL_IMU_typedef;
 

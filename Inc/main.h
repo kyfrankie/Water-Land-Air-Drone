@@ -60,6 +60,7 @@ extern "C" {
 #include "camera.h"
 #include "brushless.h"
 #include "flight_control.h"
+//#include "IMU_ICM20602.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -101,14 +102,8 @@ void Error_Handler(void);
 #define Camera_OE_GPIO_Port GPIOF
 #define Camera_PRST_Pin GPIO_PIN_5
 #define Camera_PRST_GPIO_Port GPIOF
-#define Bluetooth_RX_Pin GPIO_PIN_6
-#define Bluetooth_RX_GPIO_Port GPIOF
-#define Bluetooth_TX_Pin GPIO_PIN_7
-#define Bluetooth_TX_GPIO_Port GPIOF
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
-#define Laser1_TX_Pin GPIO_PIN_0
-#define Laser1_TX_GPIO_Port GPIOA
 #define Servo1_Pin GPIO_PIN_1
 #define Servo1_GPIO_Port GPIOA
 #define Servo2_Pin GPIO_PIN_2
@@ -129,26 +124,12 @@ void Error_Handler(void);
 #define Brushless3_GPIO_Port GPIOE
 #define Brushless4_Pin GPIO_PIN_14
 #define Brushless4_GPIO_Port GPIOE
-#define Laser2_RX_Pin GPIO_PIN_12
-#define Laser2_RX_GPIO_Port GPIOB
-#define Laser2_TX_Pin GPIO_PIN_13
-#define Laser2_TX_GPIO_Port GPIOB
 #define LD3_Pin GPIO_PIN_14
 #define LD3_GPIO_Port GPIOB
-#define IMU_RX_Pin GPIO_PIN_15
-#define IMU_RX_GPIO_Port GPIOB
 #define STLK_RX_Pin GPIO_PIN_8
 #define STLK_RX_GPIO_Port GPIOD
 #define STLK_TX_Pin GPIO_PIN_9
 #define STLK_TX_GPIO_Port GPIOD
-#define Servo5_Pin GPIO_PIN_12
-#define Servo5_GPIO_Port GPIOD
-#define PWM1_Pin GPIO_PIN_13
-#define PWM1_GPIO_Port GPIOD
-#define PWM2_Pin GPIO_PIN_14
-#define PWM2_GPIO_Port GPIOD
-#define PWM3_Pin GPIO_PIN_15
-#define PWM3_GPIO_Port GPIOD
 #define USB_PowerSwitchOn_Pin GPIO_PIN_6
 #define USB_PowerSwitchOn_GPIO_Port GPIOG
 #define USB_OverCurrent_Pin GPIO_PIN_7
@@ -165,20 +146,14 @@ void Error_Handler(void);
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
-#define Laser1_RX_Pin GPIO_PIN_11
-#define Laser1_RX_GPIO_Port GPIOC
+#define IMU_CS_Pin GPIO_PIN_10
+#define IMU_CS_GPIO_Port GPIOG
 #define RC3_Pin GPIO_PIN_4
 #define RC3_GPIO_Port GPIOB
 #define RC4_Pin GPIO_PIN_5
 #define RC4_GPIO_Port GPIOB
-#define IMU_TX_Pin GPIO_PIN_6
-#define IMU_TX_GPIO_Port GPIOB
 #define LD2_Pin GPIO_PIN_7
 #define LD2_GPIO_Port GPIOB
-#define Camera_SIO_C_Pin GPIO_PIN_8
-#define Camera_SIO_C_GPIO_Port GPIOB
-#define Camera_SIO_D_Pin GPIO_PIN_9
-#define Camera_SIO_D_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

@@ -13,9 +13,9 @@ void UL_IMU_Init(UL_IMU_typedef* IMU, UART_HandleTypeDef* huart){
 }
 
 void UL_IMU_SetUp(UL_IMU_typedef* IMU){
-    UL_IMU_Write(IMU, RSW, 0xDE, 0x00);         //feedback data package
-    UL_IMU_Write(IMU, RRATE, 0x06, 0x00);       //feedback rate
-    UL_IMU_Write(IMU, BAUD, 0x06, 0x00);        //BAUD rate
+    //UL_IMU_Write(IMU, RSW, 0xDE, 0x00);         //feedback data package
+    UL_IMU_Write(IMU, RRATE, 0x06, 0x0b);       //feedback rate
+    //UL_IMU_Write(IMU, BAUD, 0x06, 0x00);        //BAUD rate
     UL_IMU_Write(IMU, SAVE, 0x00, 0x00);        //Save
 }
 
@@ -36,8 +36,8 @@ void UL_IMU_Read(UL_IMU_typedef* IMU){
                     i += 10;
                     break;
                 case 0x53 :
-                    IMU->roll = (short)(IMU->rxbuff[i+3] << 8 | IMU->rxbuff[i+2]) / 32768.0*180.0;
-                    IMU->pitch = (short)(IMU->rxbuff[i+5] << 8 | IMU->rxbuff[i+4]) / 32768.0*180.0;
+                    IMU->pitch = (short)(IMU->rxbuff[i+3] << 8 | IMU->rxbuff[i+2]) / 32768.0*180.0;
+                    IMU->roll = (short)(IMU->rxbuff[i+5] << 8 | IMU->rxbuff[i+4]) / 32768.0*180.0;
                     IMU->yaw = (short)(IMU->rxbuff[i+7] << 8 | IMU->rxbuff[i+6]) / 32768.0*180.0;
                     i += 10;
                     break;
@@ -52,7 +52,7 @@ void UL_IMU_Read(UL_IMU_typedef* IMU){
                     i += 10;
                     break;
                 case 0x57:
-                    
+
                 default:
                     break;
             }

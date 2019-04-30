@@ -1,11 +1,20 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    stm32h7xx_it.h
-  * @brief   This file contains the headers of the interrupt handlers.
+  * @file    jpeg_utils_conf_template.h
+  * @author  MCD Application Team
+  * @version V2.0.0
+  * @date    3-June-2016
+  * @brief   jpeg_utils configuration template file.
+  *          This file should be copied to the application folder and modified 
+  *          as follows:
+  *            - Rename it to 'jpeg_utils_conf.h'.
+  *            - Update the name of the JPEG driver's header file, depending on
+  *               the EVAL board you are using, see lines 51 and 52 below (by default this  
+  *               file will generate compile error unless you do this modification).
   ******************************************************************************
+  * @attention
   *
-  * COPYRIGHT(c) 2019 STMicroelectronics
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -30,50 +39,47 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */
-/* USER CODE END Header */
+  */ 
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32H7xx_IT_H
-#define __STM32H7xx_IT_H
 
-#ifdef __cplusplus
- extern "C" {
-#endif 
+#ifndef  __JPEG_UTILS_CONF_H__
+#define  __JPEG_UTILS_CONF_H__
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 
-/* USER CODE END Includes */
+/* Includes ------------------------------------------------------------------*/
+/*#include "stm32fXxx_hal.h" */
+/* #include "stm32fXxx_hal_jpeg.h" */
 
+/* Private define ------------------------------------------------------------*/
+/** @addtogroup JPEG_Private_Defines
+  * @{
+  */
+/* RGB Color format definition for JPEG encoding/Decoding : Should not be modified*/
+#define JPEG_ARGB8888            0  /* ARGB8888 Color Format */
+#define JPEG_RGB888              1  /* RGB888 Color Format   */
+#define JPEG_RGB565              2  /* RGB565 Color Format   */
+    
+/**
+* @}
+*/
+    
 /* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
-
-/* USER CODE END ET */
-
 /* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
+/** @addtogroup JPEG_Exported_Defines
+  * @{
+  */    
+#define USE_JPEG_DECODER     1  /* Enable Decoding Post-Processing functions (YCbCr to RGB conversion) */
+#define USE_JPEG_ENCODER     1  /* Enable Encoding Pre-Processing functions (RGB to YCbCr conversion)*/
 
-/* USER CODE END EC */
+#define JPEG_RGB_FORMAT      JPEG_ARGB8888  /* Select RGB format: ARGB8888, RGB888, RBG_565 */
+#define JPEG_SWAP_RB         0  /* Change color order to BGR */
+
+/**
+* @}
+*/
 
 /* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
+/* Exported functions ------------------------------------------------------- */
 
-/* USER CODE END EM */
-
-/* Exported functions prototypes ---------------------------------------------*/
-void SysTick_Handler(void);
-void TIM3_IRQHandler(void);
-void TIM4_IRQHandler(void);
-void UART4_IRQHandler(void);
-/* USER CODE BEGIN EFP */
-
-/* USER CODE END EFP */
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* __STM32H7xx_IT_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+#endif /* __JPEG_UTILS_CONF_H__ */

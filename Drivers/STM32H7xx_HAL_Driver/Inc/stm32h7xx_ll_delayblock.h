@@ -1,11 +1,14 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    stm32h7xx_it.h
-  * @brief   This file contains the headers of the interrupt handlers.
+  * @file    stm32h7xx_ll_delayblock.h
+  * @author  MCD Application Team
+  * @version V1.2.0
+  * @date   29-December-2017
+  * @brief   Header file of Delay Block module.
   ******************************************************************************
+  * @attention
   *
-  * COPYRIGHT(c) 2019 STMicroelectronics
+  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -30,50 +33,82 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */
-/* USER CODE END Header */
+  */ 
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32H7xx_IT_H
-#define __STM32H7xx_IT_H
+#ifndef __STM32H7xx_LL_DLYB_H
+#define __STM32H7xx_LL_DLYB_H
 
 #ifdef __cplusplus
  extern "C" {
-#endif 
+#endif
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
+/* Includes ------------------------------------------------------------------*/
+#include "stm32h7xx_hal_def.h"
 
-/* USER CODE END Includes */
+/** @addtogroup STM32H7xx_HAL_Driver
+  * @{
+  */
 
-/* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
+/** @addtogroup DELAYBLOCK_LL
+  * @{
+  */ 
 
-/* USER CODE END ET */
+/* Exported types ------------------------------------------------------------*/ 
+/** @defgroup DELAYBLOCK_LL_Exported_Types DELAYBLOCK_LL Exported Types
+  * @{
+  */
+  
 
+/**
+  * @}
+  */
+  
 /* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
+/** @defgroup DLYB_Exported_Constants Delay Block Exported Constants
+  * @{
+  */
 
-/* USER CODE END EC */
 
-/* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
+#define DLYB_MAX_UNIT   ((uint32_t)0x00000080U) /*!< Max UNIT value (128)  */
 
-/* USER CODE END EM */
+/** @defgroup DLYB_Instance DLYB Instance
+  * @{
+  */
+#define IS_DLYB_ALL_INSTANCE(INSTANCE)  (((INSTANCE) == DLYB_SDMMC1) || \
+                                         ((INSTANCE) == DLYB_SDMMC2) || \
+                                         ((INSTANCE) == DLYB_QUADSPI))
+/**
+  * @}
+  */
 
-/* Exported functions prototypes ---------------------------------------------*/
-void SysTick_Handler(void);
-void TIM3_IRQHandler(void);
-void TIM4_IRQHandler(void);
-void UART4_IRQHandler(void);
-/* USER CODE BEGIN EFP */
+/**
+  * @}
+  */ 
+ 
+/* Peripheral Control functions  ************************************************/
+/** @addtogroup HAL_DELAYBLOCK_LL_Group3 Delay Block functions
+  * @{
+  */
+HAL_StatusTypeDef DelayBlock_Enable(DLYB_TypeDef *dlyb);
+HAL_StatusTypeDef DelayBlock_Disable(DLYB_TypeDef *dlyb);
 
-/* USER CODE END EFP */
+/**
+  * @}
+  */
+  
+  
+/**
+  * @}
+  */
 
+  /**
+  * @}
+  */
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __STM32H7xx_IT_H */
+#endif /* __STM32H7xx_LL_DLYB_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
