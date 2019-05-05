@@ -10,7 +10,7 @@
 
 
 
-typedef struct {
+volatile typedef struct {
     TIM_HandleTypeDef* htim1;
     TIM_HandleTypeDef* htim2;
     uint8_t CaptureIndex[6];

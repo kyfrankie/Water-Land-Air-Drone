@@ -55,6 +55,7 @@ UL_PWM_typedef brushless[4];
 UL_PWM_typedef servo[4];
 UL_RC_typedef RC;
 UL_flight_control_typedef FC = {0};
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -72,8 +73,6 @@ UL_flight_control_typedef FC = {0};
 DCMI_HandleTypeDef hdcmi;
 
 JPEG_HandleTypeDef hjpeg;
-
-SD_HandleTypeDef hsd1;
 
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi6;
@@ -105,7 +104,6 @@ static void MX_TIM4_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_JPEG_Init(void);
 static void MX_SPI6_Init(void);
-static void MX_SDMMC1_SD_Init(void);
 static void MX_UART4_Init(void);
 static void MX_DCMI_Init(void);
 /* USER CODE BEGIN PFP */
@@ -123,7 +121,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
         if (FC.ready == 1)
             UL_flight_control(&FC);
     }
-
     HAL_UART_Receive_IT(huart, (uint8_t *) IMU.rxbuff, sizeof(IMU.rxbuff));
     HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
 }
@@ -175,12 +172,14 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
 
 void UL_brushless_setup(){
-    HAL_Delay(5000);
+    //HAL_Delay(5000);
 
-    UL_PWM_SetUs(&brushless[0], 2000);
-    UL_PWM_SetUs(&brushless[1], 2000);
-    UL_PWM_SetUs(&brushless[2], 2000);
-    UL_PWM_SetUs(&brushless[3], 2000);
+    UL_PWM_SetUs(&brushless[0], 1000);
+    UL_PWM_SetUs(&brushless[1], 1000);
+    UL_PWM_SetUs(&brushless[2], 1000);
+    UL_PWM_SetUs(&brushless[3], 1000);
+
+    HAL_Delay(500);
 
     HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
 
@@ -237,12 +236,11 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM4_Init();
   MX_SPI1_Init();
-  MX_FATFS_Init();
   MX_JPEG_Init();
   MX_SPI6_Init();
-  MX_SDMMC1_SD_Init();
   MX_UART4_Init();
   MX_DCMI_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
   //! IMU init
@@ -261,14 +259,14 @@ int main(void)
   UL_PWM_Init(&servo[3], &htim2, TIM_CHANNEL_1, 20000);
     //UL_PWM_SetUs()
   UL_PWM_SetUs(&servo[0], 1300);
-    //HAL_Delay(1000);
+    HAL_Delay(500);
   UL_PWM_SetUs(&servo[1], 1300);
-    //HAL_Delay(1000);
+    HAL_Delay(500);
   UL_PWM_SetUs(&servo[2], 1300);
-    //HAL_Delay(1000);
+    HAL_Delay(500);
   UL_PWM_SetUs(&servo[3], 1300);
 
-  HAL_Delay(1000);
+  HAL_Delay(500);
   UL_PWM_SetUs(&servo[0], 1550);
   UL_PWM_SetUs(&servo[1], 1500);
   UL_PWM_SetUs(&servo[2], 1550);
@@ -287,7 +285,7 @@ int main(void)
   UL_PWM_SetUs(&brushless[1], 1000);
   UL_PWM_SetUs(&brushless[2], 1000);
   UL_PWM_SetUs(&brushless[3], 1000);
-  HAL_Delay(7000);
+  HAL_Delay(3000);
 
   //! enable IMU
   __HAL_UART_ENABLE(IMU.huart);
@@ -297,7 +295,6 @@ int main(void)
 
   HAL_Delay(1000);
   UL_flight_control_init(&FC);
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -374,9 +371,8 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART3|RCC_PERIPHCLK_UART4
-                              |RCC_PERIPHCLK_SPI1|RCC_PERIPHCLK_SDMMC
-                              |RCC_PERIPHCLK_SPI6|RCC_PERIPHCLK_USB;
-  PeriphClkInitStruct.SdmmcClockSelection = RCC_SDMMCCLKSOURCE_PLL;
+                              |RCC_PERIPHCLK_SPI1|RCC_PERIPHCLK_SPI6
+                              |RCC_PERIPHCLK_USB;
   PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
   PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
   PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_HSI48;
@@ -447,33 +443,6 @@ static void MX_JPEG_Init(void)
   /* USER CODE BEGIN JPEG_Init 2 */
 
   /* USER CODE END JPEG_Init 2 */
-
-}
-
-/**
-  * @brief SDMMC1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_SDMMC1_SD_Init(void)
-{
-
-  /* USER CODE BEGIN SDMMC1_Init 0 */
-
-  /* USER CODE END SDMMC1_Init 0 */
-
-  /* USER CODE BEGIN SDMMC1_Init 1 */
-
-  /* USER CODE END SDMMC1_Init 1 */
-  hsd1.Instance = SDMMC1;
-  hsd1.Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
-  hsd1.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
-  hsd1.Init.BusWide = SDMMC_BUS_WIDE_4B;
-  hsd1.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
-  hsd1.Init.ClockDiv = 0;
-  /* USER CODE BEGIN SDMMC1_Init 2 */
-
-  /* USER CODE END SDMMC1_Init 2 */
 
 }
 

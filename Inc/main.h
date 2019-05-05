@@ -60,6 +60,7 @@ extern "C" {
 #include "camera.h"
 #include "brushless.h"
 #include "flight_control.h"
+#include "SD.h"
 //#include "IMU_ICM20602.h"
 /* USER CODE END Includes */
 

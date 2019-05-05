@@ -36,15 +36,17 @@ void UL_IMU_Read(UL_IMU_typedef* IMU){
                     i += 10;
                     break;
                 case 0x53 :
-                    IMU->pitch = (short)(IMU->rxbuff[i+3] << 8 | IMU->rxbuff[i+2]) / 32768.0*180.0;
-                    IMU->roll = (short)(IMU->rxbuff[i+5] << 8 | IMU->rxbuff[i+4]) / 32768.0*180.0;
+                    IMU->pitch = (short)(IMU->rxbuff[i+3] << 8 | IMU->rxbuff[i+2]) / 32768.0*180.0 - IMU->offset_pitch;
+                    IMU->roll = (short)(IMU->rxbuff[i+5] << 8 | IMU->rxbuff[i+4]) / 32768.0*180.0 - IMU->offset_roll;
                     IMU->yaw = (short)(IMU->rxbuff[i+7] << 8 | IMU->rxbuff[i+6]) / 32768.0*180.0;
+                    if (IMU->yaw < 0.0)
+                        IMU->yaw *= -1.0;
                     i += 10;
                     break;
                 case 0x54 :
                     IMU->magnet_x = (short)(IMU->rxbuff[i+3] << 8 | IMU->rxbuff[i+2]);
                     IMU->magnet_y = (short)(IMU->rxbuff[i+5] << 8 | IMU->rxbuff[i+4]);
-                    IMU->magnet_z = (short)(IMU->rxbuff[i+7] << 8 | IMU->rxbuff[i+6]);
+                    IMU->magnet_z = (short)(IMU->rxbuff[i+7] << 8 | IMU->rxbuff[i+6]) - IMU->offset_accel_z;
                     i += 10;
                     break;
                 case 0x56 :
@@ -58,6 +60,12 @@ void UL_IMU_Read(UL_IMU_typedef* IMU){
             }
         }
     }
+}
+
+void UL_IMU_CAL(UL_IMU_typedef* IMU){
+    IMU->offset_pitch = IMU->pitch;
+    IMU->offset_roll = IMU->roll;
+    IMU->offset_accel_z = IMU->accel_z;
 }
 
 void UL_IMU_Write(UL_IMU_typedef* IMU, uint8_t cmd, uint8_t option1, uint8_t option2){
